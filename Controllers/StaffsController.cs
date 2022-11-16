@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using TinTucGameAPI.Models;
+using TinTucGameAPI.Models.View;
 
 namespace TinTucGameAPI.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    [Authorize(Policy ="Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class StaffsController : ControllerBase
@@ -21,12 +25,33 @@ namespace TinTucGameAPI.Controllers
         {
             _context = context;
         }
-
+        class SM
+        {
+            public staff Staff { get; set; }
+            public Role Role { get; set; }
+        }
         // GET: api/Staffs
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<staff>>> Getstaff()
+        public async Task<ActionResult<IEnumerable<staff>>> Getstaff(int page)
         {
-            return await _context.staff.ToListAsync();
+            int pageSize = 2;
+            int currentPage = page;
+            var totalItems = await _context.staff.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalItems / (double)pageSize);
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+            Pager pager = new Pager(totalItems, currentPage, pageSize);
+            //var data = await _context.staff.Include(u => u.User).Skip((currentPage - 1) * pageSize).Take(pageSize).ToListAsync();
+            var data = await _context.staff.Include(u => u.User).Select(u => new SM
+            {
+                Staff = u,
+                Role = u.User.Roles.Where(r => r.Role1 != "User").FirstOrDefault()
+            }).Skip((currentPage - 1) * pageSize).Take(pageSize).ToListAsync();
+            return Ok(new
+            {
+                pager = pager,
+                data = data
+            });
         }
 
         // GET: api/Staffs/5
@@ -77,12 +102,26 @@ namespace TinTucGameAPI.Controllers
         // POST: api/Staffs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<staff>> Poststaff(staff staff)
+        public async Task<ActionResult<staff>> Poststaff(StaffViewModel staff)
         {
+            //var staff = model.ToObject<staff>();
+            //var authenticate = model.ToObject<AuthenticateModel>();
             staff.Id = Guid.NewGuid().ToString();
-            _context.staff.Add(staff);
-            staff.User.Id = Guid.NewGuid().ToString();
-            _context.Users.Add(staff.User);
+            staff model = new staff()
+            {
+                Id = staff.Id,
+                Name = staff.Name,
+                Address = staff.Address,
+                Gender = staff.Gender,
+                Birthdate = staff.Birthdate,
+                Phone = staff.Phone,
+                UserId = staff.UserId,
+            };
+            _context.staff.Add(model);
+            var user =await _context.Users.Where(u=>u.Id == staff.UserId).Include(r=>r.Roles).FirstOrDefaultAsync();
+            var role = _context.Roles.Where(r => r.Role1 == staff.Job).FirstOrDefault();
+            user.Roles.Add(role);
+            
             try
             {
                 await _context.SaveChangesAsync();
@@ -121,6 +160,22 @@ namespace TinTucGameAPI.Controllers
         private bool staffExists(string id)
         {
             return _context.staff.Any(e => e.Id == id);
+        }
+        [NonAction]
+        public string GenerateSalt(int size)
+        {
+            var saltBytes = new byte[size];
+            using (var provider = RandomNumberGenerator.Create())
+            {
+                provider.GetNonZeroBytes(saltBytes);
+            }
+            return Convert.ToBase64String(saltBytes);
+        }
+        [NonAction]
+        public string ComputeHash(byte[] bytesToHash, byte[] salt)
+        {
+            var byteResult = new Rfc2898DeriveBytes(bytesToHash, salt, 10000);
+            return Convert.ToBase64String(byteResult.GetBytes(24));
         }
     }
 }

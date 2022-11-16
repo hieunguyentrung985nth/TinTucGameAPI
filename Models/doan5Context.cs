@@ -248,15 +248,14 @@ namespace TinTucGameAPI.Models
                     .HasConstraintName("FK_Staff_User");
             });
 
-           
 
             //modelBuilder.Entity<UserRole>()
             //    .HasOne(u => u.User)
-            //    .WithMany(u => u.UserRoles)
+            //    .WithMany(u => u)
             //    .HasForeignKey(u => u.User_id);
             //modelBuilder.Entity<UserRole>()
             //   .HasOne(u => u.Role)
-            //   .WithMany(u => u.UserRoles)
+            //   .WithMany(u => u.Users)
             //   .HasForeignKey(u => u.Role_id);
 
             OnModelCreatingPartial(modelBuilder);

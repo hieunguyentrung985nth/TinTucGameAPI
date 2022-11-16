@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\tai lieu\\laptrinh\\NetCore\\Đồ án 5\\TinTucGameAPI\\TinTucGameAPI.csproj": {}
+    "D:\\Tai lieu\\cac file lap trinh\\Đồ án 5\\App\\TinTucGameAPI\\TinTucGameAPI.csproj": {}
   },
   "projects": {
-    "E:\\tai lieu\\laptrinh\\NetCore\\Đồ án 5\\TinTucGameAPI\\TinTucGameAPI.csproj": {
+    "D:\\Tai lieu\\cac file lap trinh\\Đồ án 5\\App\\TinTucGameAPI\\TinTucGameAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\tai lieu\\laptrinh\\NetCore\\Đồ án 5\\TinTucGameAPI\\TinTucGameAPI.csproj",
+        "projectUniqueName": "D:\\Tai lieu\\cac file lap trinh\\Đồ án 5\\App\\TinTucGameAPI\\TinTucGameAPI.csproj",
         "projectName": "TinTucGameAPI",
-        "projectPath": "E:\\tai lieu\\laptrinh\\NetCore\\Đồ án 5\\TinTucGameAPI\\TinTucGameAPI.csproj",
-        "packagesPath": "C:\\Users\\Hieu\\.nuget\\packages\\",
-        "outputPath": "E:\\tai lieu\\laptrinh\\NetCore\\Đồ án 5\\TinTucGameAPI\\obj\\",
+        "projectPath": "D:\\Tai lieu\\cac file lap trinh\\Đồ án 5\\App\\TinTucGameAPI\\TinTucGameAPI.csproj",
+        "packagesPath": "C:\\Users\\DarkFlameMaster\\.nuget\\packages\\",
+        "outputPath": "D:\\Tai lieu\\cac file lap trinh\\Đồ án 5\\App\\TinTucGameAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Hieu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\DarkFlameMaster\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -48,6 +48,10 @@
               "target": "Package",
               "version": "[6.0.10, )"
             },
+            "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
+              "target": "Package",
+              "version": "[6.0.11, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[6.0.10, )"
@@ -71,6 +75,10 @@
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[6.0.10, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -96,7 +104,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     }

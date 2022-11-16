@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace TinTucGameAPI.Models
+﻿namespace TinTucGameAPI.Models.View
 {
-    public partial class staff
+    public class StaffViewModel
     {
         public string? Id { get; set; } = null!;
         public string? Name { get; set; }
@@ -12,7 +9,7 @@ namespace TinTucGameAPI.Models
         public DateTime? Birthdate { get; set; }
         public string? Phone { get; set; }
         public string? UserId { get; set; }
+        public string Job { get; set; }
 
-        public virtual User? User { get; set; }
     }
 }

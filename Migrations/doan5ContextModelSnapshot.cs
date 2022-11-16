@@ -36,7 +36,7 @@ namespace TinTucGameAPI.Migrations
 
                     b.HasKey("PostId", "CategoryId");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex(new[] { "CategoryId" }, "IX_PostCategory_category_id");
 
                     b.ToTable("PostCategory", (string)null);
                 });
@@ -55,7 +55,7 @@ namespace TinTucGameAPI.Migrations
 
                     b.HasKey("PostId", "ImageId");
 
-                    b.HasIndex("ImageId");
+                    b.HasIndex(new[] { "ImageId" }, "IX_PostImage_image_id");
 
                     b.ToTable("PostImage", (string)null);
                 });
@@ -83,7 +83,7 @@ namespace TinTucGameAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Categoryid");
+                    b.HasIndex(new[] { "Categoryid" }, "IX_Category_categoryid");
 
                     b.ToTable("Category", (string)null);
                 });
@@ -140,7 +140,7 @@ namespace TinTucGameAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Author");
+                    b.HasIndex(new[] { "Author" }, "IX_Post_author");
 
                     b.ToTable("Post", (string)null);
                 });
@@ -200,7 +200,7 @@ namespace TinTucGameAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_Staff_user_id");
 
                     b.ToTable("Staff", (string)null);
                 });
@@ -236,6 +236,21 @@ namespace TinTucGameAPI.Migrations
                     b.ToTable("User", (string)null);
                 });
 
+            modelBuilder.Entity("TinTucGameAPI.Models.UserRole", b =>
+                {
+                    b.Property<string>("User_id")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Role_id")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("User_id", "Role_id");
+
+                    b.HasIndex("Role_id");
+
+                    b.ToTable("UserRoles");
+                });
+
             modelBuilder.Entity("UserRole", b =>
                 {
                     b.Property<string>("UserId")
@@ -250,7 +265,7 @@ namespace TinTucGameAPI.Migrations
 
                     b.HasKey("UserId", "RoleId");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex(new[] { "RoleId" }, "IX_UserRole_role_id");
 
                     b.ToTable("UserRole", (string)null);
                 });
@@ -311,6 +326,25 @@ namespace TinTucGameAPI.Migrations
                         .WithMany("staff")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_Staff_User");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TinTucGameAPI.Models.UserRole", b =>
+                {
+                    b.HasOne("TinTucGameAPI.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("Role_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TinTucGameAPI.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("User_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
 
                     b.Navigation("User");
                 });

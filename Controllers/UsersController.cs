@@ -38,14 +38,17 @@ namespace TinTucGameAPI.Controllers
             return Ok(await _context.Users.ToListAsync());
         }
         [HttpPost]
-        [Route("/sign-up")]
+        [Route("/api/sign-up")]
         [AllowAnonymous]
         public async Task<IActionResult> SignUp(AuthenticateModel _userData)
         {
             var newSalt = GenerateSalt(12);
+            if(_context.Users.Any(u=>u.Email == _userData.Email))
+            {
+                return BadRequest("Email bị trùng");
+            }
             var userRole = _context.Roles.Where(r => r.Role1 == "User").FirstOrDefault();
             _userData.Password = ComputeHash(Encoding.UTF8.GetBytes(_userData.Password), Encoding.UTF8.GetBytes(newSalt));
-            _userData.Salt = newSalt;
             User newUser = new User()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -57,9 +60,13 @@ namespace TinTucGameAPI.Controllers
             newUser.Roles.Add(userRole);
             _context.Users.Add(newUser);          
             _context.SaveChanges();
-            return Ok(_userData);
+            return Ok(new
+            {
+                message = "Success",
+                id = newUser.Id
+            });
         }
-        [Route("/login")]
+        [Route("/api/login")]
         [HttpPost]
         public async Task<IActionResult> Post(AuthenticateModel _userData)
         {
@@ -73,7 +80,6 @@ namespace TinTucGameAPI.Controllers
 
                 if (user != null)
                 {
-                    //create claims details based on the user information
                     var claims = new List<Claim> {
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
@@ -83,7 +89,7 @@ namespace TinTucGameAPI.Controllers
                     };
                     foreach (var role in user.Roles)
                     {
-                        claims.Add(new Claim(ClaimTypes.Role, role.Role1));
+                        claims.Add(new Claim("Role", role.Role1));
                     }
                     
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
