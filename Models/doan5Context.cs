@@ -17,6 +17,7 @@ namespace TinTucGameAPI.Models
         }
 
         public virtual DbSet<Category> Categories { get; set; } = null!;
+        public virtual DbSet<Feed> Feeds { get; set; } = null!;
         public virtual DbSet<Image> Images { get; set; } = null!;
         public virtual DbSet<Post> Posts { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
@@ -27,7 +28,8 @@ namespace TinTucGameAPI.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=Hieu\\SQLEXPRESS; Initial Catalog=doan5;Trusted_Connection=true;");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=DARKFLAMEMASTER\\SQLEXPRESS; Initial Catalog=doan5;Trusted_Connection=true;");
             }
         }
 
@@ -36,8 +38,6 @@ namespace TinTucGameAPI.Models
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.ToTable("Category");
-
-                entity.HasIndex(e => e.Categoryid, "IX_Category_categoryid");
 
                 entity.Property(e => e.Id)
                     .HasMaxLength(50)
@@ -51,6 +51,10 @@ namespace TinTucGameAPI.Models
                     .HasColumnType("ntext")
                     .HasColumnName("description");
 
+                entity.Property(e => e.Slug)
+                    .HasMaxLength(500)
+                    .HasColumnName("slug");
+
                 entity.Property(e => e.Title)
                     .HasMaxLength(50)
                     .HasColumnName("title");
@@ -59,6 +63,37 @@ namespace TinTucGameAPI.Models
                     .WithMany(p => p.InverseCategoryNavigation)
                     .HasForeignKey(d => d.Categoryid)
                     .HasConstraintName("FK_Category_Category");
+            });
+
+            modelBuilder.Entity<Feed>(entity =>
+            {
+                entity.ToTable("Feed");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(50)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Content)
+                    .HasColumnType("ntext")
+                    .HasColumnName("content");
+
+                entity.Property(e => e.PostId)
+                    .HasMaxLength(50)
+                    .HasColumnName("post_id");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(50)
+                    .HasColumnName("user_id");
+
+                entity.HasOne(d => d.Post)
+                    .WithMany(p => p.Feeds)
+                    .HasForeignKey(d => d.PostId)
+                    .HasConstraintName("FK_Feed_Post");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Feeds)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_Feed_User");
             });
 
             modelBuilder.Entity<Image>(entity =>
@@ -78,8 +113,6 @@ namespace TinTucGameAPI.Models
             {
                 entity.ToTable("Post");
 
-                entity.HasIndex(e => e.Author, "IX_Post_author");
-
                 entity.Property(e => e.Id)
                     .HasMaxLength(50)
                     .HasColumnName("id");
@@ -87,6 +120,10 @@ namespace TinTucGameAPI.Models
                 entity.Property(e => e.Author)
                     .HasMaxLength(50)
                     .HasColumnName("author");
+
+                entity.Property(e => e.Banner)
+                    .HasColumnType("ntext")
+                    .HasColumnName("banner");
 
                 entity.Property(e => e.Content)
                     .HasColumnType("ntext")
@@ -100,13 +137,23 @@ namespace TinTucGameAPI.Models
                     .HasColumnType("ntext")
                     .HasColumnName("description");
 
-                entity.Property(e => e.Title)
+                entity.Property(e => e.Slug)
+                    .HasMaxLength(500)
+                    .HasColumnName("slug");
+
+                entity.Property(e => e.Status)
                     .HasMaxLength(50)
+                    .HasColumnName("status");
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(250)
                     .HasColumnName("title");
 
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("date")
                     .HasColumnName("updated_at");
+
+                entity.Property(e => e.View).HasColumnName("view");
 
                 entity.HasOne(d => d.AuthorNavigation)
                     .WithMany(p => p.Posts)
@@ -117,15 +164,13 @@ namespace TinTucGameAPI.Models
                     .WithMany(p => p.Posts)
                     .UsingEntity<Dictionary<string, object>>(
                         "PostCategory",
-                        l => l.HasOne<Category>().WithMany().HasForeignKey("CategoryId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_PostCategory_Category"),
-                        r => r.HasOne<Post>().WithMany().HasForeignKey("PostId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_PostCategory_Post"),
+                        l => l.HasOne<Category>().WithMany().HasForeignKey("CategoryId").HasConstraintName("FK_PostCategory_Category"),
+                        r => r.HasOne<Post>().WithMany().HasForeignKey("PostId").HasConstraintName("FK_PostCategory_Post"),
                         j =>
                         {
                             j.HasKey("PostId", "CategoryId");
 
                             j.ToTable("PostCategory");
-
-                            j.HasIndex(new[] { "CategoryId" }, "IX_PostCategory_category_id");
 
                             j.IndexerProperty<string>("PostId").HasMaxLength(50).HasColumnName("post_id");
 
@@ -143,8 +188,6 @@ namespace TinTucGameAPI.Models
                             j.HasKey("PostId", "ImageId");
 
                             j.ToTable("PostImage");
-
-                            j.HasIndex(new[] { "ImageId" }, "IX_PostImage_image_id");
 
                             j.IndexerProperty<string>("PostId").HasMaxLength(50).HasColumnName("post_id");
 
@@ -192,34 +235,29 @@ namespace TinTucGameAPI.Models
                     .UsingEntity<Dictionary<string, object>>(
                         "UserRole",
                         l => l.HasOne<Role>().WithMany().HasForeignKey("RoleId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_UserRole_Role"),
-                        r => r.HasOne<User>().WithMany().HasForeignKey("UserId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_UserRole_User"),
+                        r => r.HasOne<User>().WithMany().HasForeignKey("UserId").HasConstraintName("FK_UserRole_User"),
                         j =>
                         {
                             j.HasKey("UserId", "RoleId");
 
                             j.ToTable("UserRole");
 
-                            j.HasIndex(new[] { "RoleId" }, "IX_UserRole_role_id");
-
                             j.IndexerProperty<string>("UserId").HasMaxLength(50).HasColumnName("user_id");
 
                             j.IndexerProperty<string>("RoleId").HasMaxLength(50).HasColumnName("role_id");
                         });
-               
             });
 
             modelBuilder.Entity<staff>(entity =>
             {
                 entity.ToTable("Staff");
 
-                entity.HasIndex(e => e.UserId, "IX_Staff_user_id");
-
                 entity.Property(e => e.Id)
                     .HasMaxLength(50)
                     .HasColumnName("id");
 
                 entity.Property(e => e.Address)
-                    .HasMaxLength(50)
+                    .HasMaxLength(255)
                     .HasColumnName("address");
 
                 entity.Property(e => e.Birthdate)
@@ -245,18 +283,9 @@ namespace TinTucGameAPI.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.staff)
                     .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Staff_User");
             });
-
-
-            //modelBuilder.Entity<UserRole>()
-            //    .HasOne(u => u.User)
-            //    .WithMany(u => u)
-            //    .HasForeignKey(u => u.User_id);
-            //modelBuilder.Entity<UserRole>()
-            //   .HasOne(u => u.Role)
-            //   .WithMany(u => u.Users)
-            //   .HasForeignKey(u => u.Role_id);
 
             OnModelCreatingPartial(modelBuilder);
         }

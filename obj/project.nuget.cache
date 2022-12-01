@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "+yYEIRKSPyq5jFdr3nVvN62RzvBtVHt2/8JmEZZ3bULZDo9jzztENIYoat7WvrYpTW0ca5RXh/ry9bgwAdAd3Q==",
+  "dgSpecHash": "VMqp+GuJ9TA57FExUFAeyI0Uz1jr4UJ5qr+HHhNZXp76orZ9m847fEQQAmGL8OVybr3Sequ+BpWJZwF2sjeiSw==",
   "success": true,
   "projectFilePath": "D:\\Tai lieu\\cac file lap trinh\\Đồ án 5\\App\\TinTucGameAPI\\TinTucGameAPI.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,7 @@
     "C:\\Users\\DarkFlameMaster\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
     "C:\\Users\\DarkFlameMaster\\.nuget\\packages\\messagepack.annotations\\2.1.152\\messagepack.annotations.2.1.152.nupkg.sha512",
     "C:\\Users\\DarkFlameMaster\\.nuget\\packages\\messagepackanalyzer\\2.1.152\\messagepackanalyzer.2.1.152.nupkg.sha512",
+    "C:\\Users\\DarkFlameMaster\\.nuget\\packages\\microsoft.aspnet.webapi.client\\5.2.9\\microsoft.aspnet.webapi.client.5.2.9.nupkg.sha512",
     "C:\\Users\\DarkFlameMaster\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.10\\microsoft.aspnetcore.authentication.jwtbearer.6.0.10.nupkg.sha512",
     "C:\\Users\\DarkFlameMaster\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\6.0.10\\microsoft.aspnetcore.cryptography.internal.6.0.10.nupkg.sha512",
     "C:\\Users\\DarkFlameMaster\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\6.0.10\\microsoft.aspnetcore.cryptography.keyderivation.6.0.10.nupkg.sha512",

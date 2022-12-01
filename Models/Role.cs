@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace TinTucGameAPI.Models
 {
@@ -10,7 +9,7 @@ namespace TinTucGameAPI.Models
         {
             Users = new HashSet<User>();
         }
-        [Key]
+
         public string Id { get; set; } = null!;
         public string? Role1 { get; set; }
 

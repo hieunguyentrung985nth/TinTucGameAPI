@@ -11,10 +11,11 @@ namespace TinTucGameAPI.Models
             Posts = new HashSet<Post>();
         }
 
-        public string Id { get; set; } = null!;
+        public string? Id { get; set; } = null!;
         public string? Title { get; set; }
         public string? Description { get; set; }
         public string? Categoryid { get; set; }
+        public string? Slug { get; set; }
 
         public virtual Category? CategoryNavigation { get; set; }
         public virtual ICollection<Category> InverseCategoryNavigation { get; set; }

@@ -541,3 +541,4 @@ D:\Tai lieu\cac file lap trinh\Đồ án 5\App\TinTucGameAPI\obj\Debug\net6.0\re
 D:\Tai lieu\cac file lap trinh\Đồ án 5\App\TinTucGameAPI\bin\Debug\net6.0\Microsoft.AspNetCore.JsonPatch.dll
 D:\Tai lieu\cac file lap trinh\Đồ án 5\App\TinTucGameAPI\bin\Debug\net6.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 D:\Tai lieu\cac file lap trinh\Đồ án 5\App\TinTucGameAPI\bin\Debug\net6.0\Newtonsoft.Json.Bson.dll
+D:\Tai lieu\cac file lap trinh\Đồ án 5\App\TinTucGameAPI\bin\Debug\net6.0\System.Net.Http.Formatting.dll

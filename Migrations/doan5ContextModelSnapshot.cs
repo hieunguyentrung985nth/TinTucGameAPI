@@ -76,6 +76,10 @@ namespace TinTucGameAPI.Migrations
                         .HasColumnType("ntext")
                         .HasColumnName("description");
 
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
@@ -128,6 +132,10 @@ namespace TinTucGameAPI.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("ntext")
                         .HasColumnName("description");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
@@ -236,21 +244,6 @@ namespace TinTucGameAPI.Migrations
                     b.ToTable("User", (string)null);
                 });
 
-            modelBuilder.Entity("TinTucGameAPI.Models.UserRole", b =>
-                {
-                    b.Property<string>("User_id")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Role_id")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("User_id", "Role_id");
-
-                    b.HasIndex("Role_id");
-
-                    b.ToTable("UserRoles");
-                });
-
             modelBuilder.Entity("UserRole", b =>
                 {
                     b.Property<string>("UserId")
@@ -326,25 +319,6 @@ namespace TinTucGameAPI.Migrations
                         .WithMany("staff")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_Staff_User");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TinTucGameAPI.Models.UserRole", b =>
-                {
-                    b.HasOne("TinTucGameAPI.Models.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("Role_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TinTucGameAPI.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("User_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
 
                     b.Navigation("User");
                 });
