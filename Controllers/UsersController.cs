@@ -98,7 +98,7 @@ namespace TinTucGameAPI.Controllers
                         _configuration["Jwt:Issuer"],
                         _configuration["Jwt:Audience"],
                         claims,
-                        expires: DateTime.UtcNow.AddMinutes(10),
+                        expires: DateTime.UtcNow.AddHours(10),
                         signingCredentials: signIn);
 
                     return Ok(new { User = user.Email, token = new JwtSecurityTokenHandler().WriteToken(token) });
@@ -117,6 +117,19 @@ namespace TinTucGameAPI.Controllers
         private async Task<User> GetUser(string email, string password)
         {
             return await _context.Users.Include(r=>r.Roles).FirstOrDefaultAsync(u => u.Email == email && u.Passwordhash == password);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetOneUser(string id)
+        {
+            var data = await _context.staff
+                .Include(s=>s.User.Roles)
+                .Where(s=>s.UserId == id)
+                .Select(s => new {s.Id, s.Name,roles= s.User.Roles.Select(r=>r.Role1)})
+                .FirstOrDefaultAsync();
+            return Ok(new
+            {
+                data = data
+            });
         }
 
         [NonAction]
@@ -144,6 +157,26 @@ namespace TinTucGameAPI.Controllers
                 return BadRequest("User not found");
             }
 
+            return Ok(user);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllStaffs()
+        {
+            var user = await _context.staff
+                        .Include(s => s.User)
+                        .ToListAsync();
+            return Ok(user);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllManagers()
+        {
+            var role = await _context.Roles.Where(r => r.Role1 == "Manager").FirstOrDefaultAsync();
+            var user = await _context.staff
+                        .Include(s => s.User)
+                        .ThenInclude(u=>u.Roles)
+                        .Where(s=>s.User.Roles.Contains(role))
+                        .Select(s => new {s.Id, s.Name, s.Gender, s.Address, s.User.Email})
+                        .ToListAsync();
             return Ok(user);
         }
     }

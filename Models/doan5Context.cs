@@ -23,6 +23,7 @@ namespace TinTucGameAPI.Models
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<staff> staff { get; set; } = null!;
+        public virtual DbSet<Notification> Notifications { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -96,18 +97,51 @@ namespace TinTucGameAPI.Models
                     .HasConstraintName("FK_Feed_User");
             });
 
-            modelBuilder.Entity<Image>(entity =>
+            modelBuilder.Entity<Notification>(entity =>
             {
-                entity.ToTable("Image");
+                entity.ToTable("Notification");
 
                 entity.Property(e => e.Id)
                     .HasMaxLength(50)
                     .HasColumnName("id");
 
-                entity.Property(e => e.Image1)
+                entity.Property(e => e.CreatorId)
                     .HasMaxLength(50)
-                    .HasColumnName("image");
+                    .HasColumnName("creator_id");
+
+                entity.Property(e => e.PostId)
+                    .HasMaxLength(50)
+                    .HasColumnName("post_id");
+
+                entity.Property(e => e.Type)
+                    .HasMaxLength(50)
+                    .HasColumnName("type");
+
+                entity.Property(e => e.OwnerId)
+                    .HasMaxLength(50)
+                    .HasColumnName("owner_id");
+
+                entity.Property(e => e.CreatedAt)
+                   .HasColumnType("date")
+                   .HasColumnName("created_at");
+
+                entity.Property(e => e.Read)
+                   .HasMaxLength(50)
+                   .HasColumnName("read");
             });
+
+            modelBuilder.Entity<Image>(entity =>
+        {
+            entity.ToTable("Image");
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(50)
+                .HasColumnName("id");
+
+            entity.Property(e => e.Image1)
+                .HasMaxLength(50)
+                .HasColumnName("image");
+        });
 
             modelBuilder.Entity<Post>(entity =>
             {

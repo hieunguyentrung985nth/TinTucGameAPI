@@ -13,7 +13,7 @@ using TinTucGameAPI.Models.View;
 
 namespace TinTucGameAPI.Controllers
 {
-    //[Authorize(Roles ="Staff, Manager")]
+    [Authorize(Roles ="Staff, Manager")]
     [Route("api/[controller]")]
     [ApiController]
     public class PostsController : ControllerBase
@@ -113,13 +113,15 @@ namespace TinTucGameAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Post>> PostPost(CreatePostViewModel post)
         {
+            var claims = this.User.Identity as ClaimsIdentity;
+            var userId = claims.FindFirst("Id")?.Value;
             Post model = new Post
             {
                 Id = Guid.NewGuid().ToString(),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 Status = "pending",
-                Author = post.Author,
+                Author = userId,
                 Title = post.Title,
                 Description = post.Description,
                 Content = post.Content,
@@ -199,6 +201,7 @@ namespace TinTucGameAPI.Controllers
                 success = 1
             });
         }
+        [AllowAnonymous]
         [HttpPost, DisableRequestSizeLimit]
         [Route("upload-images")]
         public async Task<IActionResult> UploadImages()
