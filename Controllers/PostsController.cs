@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using TinTucGameAPI.Models;
 using TinTucGameAPI.Models.View;
 
+
 namespace TinTucGameAPI.Controllers
 {
     [Authorize(Roles ="Staff, Manager")]
@@ -252,18 +253,20 @@ namespace TinTucGameAPI.Controllers
         [Route("approve-posts")]
         public async Task<IActionResult> GetPosts(int page)
         {
-            var posts = await _context.Posts.Where(p => p.Status == "pending").Include(p => p.AuthorNavigation).Include(p => p.Categories).OrderByDescending(p => p.UpdatedAt).ThenByDescending(p => p.CreatedAt).Select(p => new { p.Id, p.Title, p.Description, p.Content, p.AuthorNavigation.staff, p.CreatedAt, p.UpdatedAt, p.View, p.Status, p.Slug, p.Banner, categoryids = p.Categories.Select(c => c.Id) }).ToListAsync();
-            //int pageSize = 5;
-            //int currentPage = page;
-            //var totalItems = posts;
-            //var totalPages = (int)Math.Ceiling((double)totalItems / (double)pageSize);
-            //if (currentPage > totalPages) currentPage = totalPages;
-            //if (currentPage < 1) currentPage = 1;
-            //Pager pager = new Pager(totalItems, currentPage, pageSize);
-            //var data = await _context.Posts.Where(p => p.Author == userId).OrderByDescending(p => p.UpdatedAt).ThenByDescending(p => p.CreatedAt).Skip((currentPage - 1) * pageSize).Take(pageSize).Include(p => p.Categories).Include(p => p.Feeds).ToListAsync();
+            int pageSize = 5;
+            int currentPage = page;
+
+            var totalItems = await _context.Posts.Where(p => p.Status == "pending").Include(p => p.AuthorNavigation).Include(p => p.Categories).OrderByDescending(p => p.UpdatedAt).ThenByDescending(p => p.CreatedAt).Select(p => new { p.Id, p.Title, p.Description, p.Content, p.AuthorNavigation.staff, p.CreatedAt, p.UpdatedAt, p.View, p.Status, p.Slug, p.Banner, categoryids = p.Categories.Select(c => c.Id) }).CountAsync();
+
+            var totalPages = (int)Math.Ceiling((double)totalItems / (double)pageSize);
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+            Pager pager = new Pager(totalItems, currentPage, pageSize);
+            var data = await _context.Posts.Where(p => p.Status == "pending").Include(p => p.AuthorNavigation).Include(p => p.Categories).OrderByDescending(p => p.UpdatedAt).ThenByDescending(p => p.CreatedAt).Select(p => new { p.Id, p.Title, p.Description, p.Content, p.AuthorNavigation.staff, p.CreatedAt, p.UpdatedAt, p.View, p.Status, p.Slug, p.Banner, categoryids = p.Categories.Select(c => c.Id) }).Skip((currentPage - 1) * pageSize).Take(pageSize).ToListAsync();
             return Ok(new
             {
-                data = posts
+                data = data,
+                pager = pager
             });
         }
         [HttpPost]
@@ -399,7 +402,10 @@ namespace TinTucGameAPI.Controllers
 
             return NoContent();
         }
-        
+
+       
+
+
     }
 
 }

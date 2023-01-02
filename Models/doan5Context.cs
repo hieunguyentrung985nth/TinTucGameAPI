@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace TinTucGameAPI.Models
 {
-    public partial class doan5Context : DbContext
+    public partial class doan5Context :DbContext
     {
         public doan5Context()
         {
@@ -14,6 +15,7 @@ namespace TinTucGameAPI.Models
         public doan5Context(DbContextOptions<doan5Context> options)
             : base(options)
         {
+
         }
 
         public virtual DbSet<Category> Categories { get; set; } = null!;
@@ -24,12 +26,15 @@ namespace TinTucGameAPI.Models
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<staff> staff { get; set; } = null!;
         public virtual DbSet<Notification> Notifications { get; set; } = null!;
+        public virtual DbSet<Room> Rooms { get; set; } = null!;
+        public virtual DbSet<Message> Messages { get; set; } = null!;
+        public virtual DbSet<MessNotifications> MessNotifications { get; set; } = null!;
+        public virtual DbSet<Participants> Participants { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Server=DARKFLAMEMASTER\\SQLEXPRESS; Initial Catalog=doan5;Trusted_Connection=true;");
             }
         }
@@ -122,12 +127,96 @@ namespace TinTucGameAPI.Models
                     .HasColumnName("owner_id");
 
                 entity.Property(e => e.CreatedAt)
-                   .HasColumnType("date")
                    .HasColumnName("created_at");
 
                 entity.Property(e => e.Read)
                    .HasMaxLength(50)
                    .HasColumnName("read");
+            });
+
+            modelBuilder.Entity<Room>(entity =>
+            {
+                entity.ToTable("Room");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(50)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.LatestId)
+                    .HasMaxLength(50)
+                    .HasColumnName("latest_id");
+
+                entity.Property(e => e.CreatedAt)
+                  .HasColumnType("datetime2")
+                   .HasColumnName("created_at");
+
+                entity.Property(e => e.Name)
+                   .HasMaxLength(50)
+                   .HasColumnName("name");
+            });
+
+            modelBuilder.Entity<Message>(entity =>
+            {
+                entity.ToTable("Message");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(50)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.SenderId)
+                    .HasMaxLength(50)
+                    .HasColumnName("sender_id");
+
+                entity.Property(e => e.CreatedAt)
+                  .HasColumnType("datetime2")
+                   .HasColumnName("created_at");
+
+                entity.Property(e => e.RoomId)
+                   .HasMaxLength(50)
+                   .HasColumnName("room_id");
+
+                entity.Property(e => e.Content)
+                   .HasColumnType("ntext")
+                   .HasColumnName("content");
+            });
+
+            modelBuilder.Entity<MessNotifications>(entity =>
+            {
+                entity.ToTable("MessNotifications");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(50)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.MessId)
+                    .HasMaxLength(50)
+                    .HasColumnName("mess_id");
+
+                entity.Property(e => e.OwnerId)
+                    .HasMaxLength(50)
+                    .HasColumnName("owner_id");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime2")
+                   .HasColumnName("created_at");
+
+                entity.Property(e => e.Read)
+                  .HasColumnType("datetime2")
+                   .HasColumnName("read");
+            });
+
+            modelBuilder.Entity<Participants>(entity =>
+            {
+                entity.ToTable("Participants");
+
+                entity.Property(e => e.RoomId)
+                    .HasMaxLength(50)
+                    .HasColumnName("room_id");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(50)
+                    .HasColumnName("user_id");
+             
             });
 
             modelBuilder.Entity<Image>(entity =>
@@ -164,7 +253,7 @@ namespace TinTucGameAPI.Models
                     .HasColumnName("content");
 
                 entity.Property(e => e.CreatedAt)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime2")
                     .HasColumnName("created_at");
 
                 entity.Property(e => e.Description)
@@ -184,7 +273,7 @@ namespace TinTucGameAPI.Models
                     .HasColumnName("title");
 
                 entity.Property(e => e.UpdatedAt)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime2")
                     .HasColumnName("updated_at");
 
                 entity.Property(e => e.View).HasColumnName("view");
@@ -319,6 +408,11 @@ namespace TinTucGameAPI.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Staff_User");
+            });
+
+            modelBuilder.Entity<Participants>(entity =>
+            {
+                entity.HasKey(t => new { t.UserId, t.RoomId });
             });
 
             OnModelCreatingPartial(modelBuilder);

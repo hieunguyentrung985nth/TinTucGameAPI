@@ -19,13 +19,13 @@
             int endPage = currentPage + 5;
             if(startPage <= 0)
             {
-                endPage = endPage - (startPage - 1);
+                //endPage = endPage - (startPage - 1);
                 startPage = 1;
             }
             if(endPage > totalPages)
             {
                 endPage = totalPages;
-                if(endPage > 6)
+                if(endPage > 6 && currentPage > 3)
                 {
                     startPage = endPage - 5;
                 }

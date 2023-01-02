@@ -542,3 +542,6 @@ D:\Tai lieu\cac file lap trinh\Đồ án 5\App\TinTucGameAPI\bin\Debug\net6.0\Mi
 D:\Tai lieu\cac file lap trinh\Đồ án 5\App\TinTucGameAPI\bin\Debug\net6.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 D:\Tai lieu\cac file lap trinh\Đồ án 5\App\TinTucGameAPI\bin\Debug\net6.0\Newtonsoft.Json.Bson.dll
 D:\Tai lieu\cac file lap trinh\Đồ án 5\App\TinTucGameAPI\bin\Debug\net6.0\System.Net.Http.Formatting.dll
+D:\Tai lieu\cac file lap trinh\Đồ án 5\App\TinTucGameAPI\bin\Debug\net6.0\MailKit.dll
+D:\Tai lieu\cac file lap trinh\Đồ án 5\App\TinTucGameAPI\bin\Debug\net6.0\MimeKit.dll
+D:\Tai lieu\cac file lap trinh\Đồ án 5\App\TinTucGameAPI\bin\Debug\net6.0\BouncyCastle.Crypto.dll

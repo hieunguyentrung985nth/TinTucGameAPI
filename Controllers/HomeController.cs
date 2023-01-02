@@ -1,10 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using MimeKit;
 using Newtonsoft.Json;
 using NuGet.Protocol;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Formatting;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using TinTucGameAPI.Models;
+using TinTucGameAPI.Models.View;
+using TinTucGameAPI.Services;
 
 namespace TinTucGameAPI.Controllers
 {
@@ -13,10 +22,18 @@ namespace TinTucGameAPI.Controllers
     public class HomeController : ControllerBase
     {
         private readonly doan5Context _context;
+        private readonly IEmailSender _sendMail;
+        //private readonly UserManager<User> _userManager;
+        //private readonly SignInManager<User> _signInManager;
+        private readonly IConfiguration _configuration;
 
-        public HomeController(doan5Context context)
+        public HomeController(doan5Context context, IEmailSender sendMail, IConfiguration configuration)
         {
             _context = context;
+            _sendMail = sendMail;
+            //_userManager = userManager;
+            //_signInManager = signInManager;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -206,6 +223,25 @@ namespace TinTucGameAPI.Controllers
                 data = data,
                 pager = pager
             });
+        }
+
+
+      
+
+        [HttpGet("send-mail")]
+        public async Task<IActionResult> SendMail()
+        {
+            await _sendMail.SendEmailAsync("staff1@gmail.com", "Hello", "test");
+            return Ok();
+
+        }
+
+        [HttpGet("send-sms")]
+        public async Task<IActionResult> SendSmS()
+        {
+            await _sendMail.SendSmsAsync("0125487954", "Hello");
+            return Ok();
+
         }
     }
 }

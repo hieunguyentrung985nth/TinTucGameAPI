@@ -115,6 +115,7 @@ namespace TinTucGameAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
+            if (category.Categoryid == "null") category.Categoryid = null;
             category.Id = Guid.NewGuid().ToString();
             _context.Categories.Add(category);
             try
