@@ -198,14 +198,14 @@ namespace TinTucGameAPI.Controllers
         public async Task<IActionResult> MorePost(Dictionary<string,object> form)
         {
             Random r = new Random();
-            var k = JsonConvert.DeserializeObject<string[]>(form["categoryids"].ToJson());
             int page = int.Parse(form["page"].ToString());
+            var k = form["categoryids"].ToJson().ToString().Replace("\"","");
             int currentPage = page;
             int pageSize = 1;
             var f = await _context.Posts
                 .Where(p => p.Status == "live").Include(p=>p.Categories).ToListAsync();
             var totalItems =f
-                .Where(p => p.Categories.Select(c => c.Id).Contains(k[0]))
+                .Where(p => p.Categories.Select(c => c.Id).Contains(k))
                 .Count();
             var test = f.Select(c =>new {s= c.Categories.Select(c => c.Id), c.Title }).ToList();
             var totalPages = (int)Math.Ceiling((double)totalItems / (double)pageSize);
@@ -213,7 +213,7 @@ namespace TinTucGameAPI.Controllers
             else if (currentPage < 0) currentPage = 1;
             Pager pager = new Pager(totalItems, currentPage, pageSize);
             var data = f
-                 .Where(p => p.Categories.Select(c => c.Id).Contains(k[0]))
+                 .Where(p => p.Categories.Select(c => c.Id).Contains(k))
                  .Skip((currentPage - 1) * pageSize)
                  .Take(pageSize)
                  .Select(p => new {p.Title, p.Content, p.Description, p.AuthorNavigation, p.View, p.CreatedAt, p.Banner, p.Slug})
